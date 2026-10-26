@@ -1,0 +1,17 @@
+CICLO & CUIDADO — PACOTE PARA HOSPEDAGEM INDEPENDENTE
+
+Este é um site estático: não precisa do Manus, de banco de dados, de conta ou de servidor de aplicação. O pacote contém os arquivos da página e pode ser colocado na raiz de um serviço de hospedagem de arquivos estáticos com HTTPS.
+
+ARQUIVOS
+- index.html: aplicativo completo, com CSS e JavaScript embutidos.
+- flower-logo.svg: ícone floral.
+- robots.txt: permite que mecanismos de busca leiam a página e o aviso noindex.
+
+DADOS E MIGRAÇÃO
+Os registros ficam no armazenamento local do navegador, associados à origem do site e ao navegador/aparelho. Eles não são sincronizados. Ao mudar do endereço Manus para outro endereço, os registros antigos não aparecem automaticamente. No site atual, toque em “Baixar meus dados”; depois abra o site neste pacote e use “Importar backup” para selecionar o JSON. A importação substitui os registros locais existentes no novo endereço, após confirmação. Guarde também o JSON como cópia de segurança.
+
+PRIVACIDADE
+O endereço do site não terá senha por padrão; qualquer pessoa com o link poderá abrir o aplicativo. O conteúdo pede não ser indexado, mas isso não é controle de acesso. Não compartilhe o link se quiser mantê-lo restrito. Os registros não são enviados por esta aplicação.
+
+PUBLICAÇÃO
+Hospede os três arquivos em um provedor estático à sua escolha. Use HTTPS e mantenha index.html, flower-logo.svg e robots.txt juntos na raiz. O serviço de hospedagem escolhido pode ter suas próprias configurações e políticas de logs; este pacote não configura uma conta nem publica o site por você.

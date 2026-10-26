@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff7f7">
+  <meta name="description" content="Rastreador pessoal de ciclo, sintomas, TPM e endometriose de parede. Seus dados ficam neste aparelho.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="icon" type="image/svg+xml" href="./flower-logo.svg">
+  <title>Ciclo & cuidado — seu rastreador pessoal</title>
+  <style>
+:root {
+  --ink: #49343e;
+  --muted: #8a7680;
+  --paper: #fff7f6;
+  --card: #fffdfc;
+  --green: #557b68;
+  --green-dark: #3f624f;
+  --mint: #e7f0e9;
+  --rose: #fae4e9;
+  --rose-dark: #a95070;
+  --peach: #fff0e8;
+  --line: #f0dfe4;
+  --gold: #c58f66;
+  --shadow: 0 12px 30px rgba(126, 72, 91, .08);
+  --radius: 23px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 18px; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at 10% 4%, rgba(248,220,228,.52), transparent 27%), radial-gradient(ellipse at 94% 32%, rgba(231,240,233,.55), transparent 24%), var(--paper);
+  color: var(--ink);
+  font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: var(--rose-dark); }
+.app { width: 100%; max-width: 440px; margin: 0 auto; min-height: 100vh; padding: 0 16px 108px; }
+.topbar { padding: max(15px, env(safe-area-inset-top)) 2px 15px; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 750; letter-spacing: -.03em; font-size: 15px; }
+.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 14px; background: linear-gradient(145deg, #e8a7b8, #c97891); color: white; box-shadow: 0 5px 12px rgba(183,96,125,.18); }
+.brand-mark svg { width: 22px; height: 22px; }
+.privacy-pill { font-size: 10px; color: #8f5068; background: #f9e5ea; border: 1px solid #f1d4dd; border-radius: 99px; padding: 7px 10px; font-weight: 700; }
+.eyebrow { color: var(--rose-dark); text-transform: uppercase; letter-spacing: .14em; font-size: 10px; font-weight: 800; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 9vw, 40px); line-height: 1.05; letter-spacing: -.045em; font-weight: 500; margin: 9px 0 11px; max-width: 390px; }
+h2 { font-family: Georgia, "Times New Roman", serif; font-size: 27px; line-height: 1.15; font-weight: 500; letter-spacing: -.025em; margin: 0 0 8px; }
+h3 { font-size: 16px; margin: 0 0 7px; letter-spacing: -.015em; }
+.intro { color: var(--muted); margin-bottom: 19px; font-size: 13px; }
+.hero { position: relative; overflow: hidden; background: linear-gradient(145deg, #fff0f2 0%, #fce8ec 54%, #f7e7ed 100%); color: var(--ink); border: 1px solid #f2d9e0; border-radius: 28px; padding: 22px 18px 19px; box-shadow: 0 14px 34px rgba(168,92,118,.13); }
+.hero::after { content: ""; position: absolute; left: -44px; bottom: -66px; width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,.28); pointer-events: none; }
+.flower-art { position: absolute; z-index: 0; right: -7px; top: -2px; width: 126px; height: 132px; opacity: .78; pointer-events: none; }
+.hero-content { position: relative; z-index: 1; }
+.hero .eyebrow { color: #a45873; }
+.hero h2 { margin: 7px 0 5px; font-family: inherit; font-weight: 730; font-size: 22px; letter-spacing: -.03em; max-width: 275px; }
+.hero-sub { color: #755c66; margin-bottom: 17px; max-width: 330px; font-size: 13px; }
+.hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+.hero-stat { background: rgba(255,255,255,.76); border: 1px solid rgba(255,255,255,.95); border-radius: 16px; padding: 11px 12px; min-height: 70px; box-shadow: 0 5px 14px rgba(149,84,106,.05); }
+.hero-stat span { display: block; color: #8e6a78; font-size: 11px; margin-bottom: 4px; }
+.hero-stat strong { font-size: 14px; line-height: 1.25; }
+.button-primary, .button-secondary, .button-quiet, .button-danger { border: 0; border-radius: 16px; min-height: 49px; padding: 12px 16px; font-weight: 750; transition: transform .15s ease, background .15s ease; }
+.button-primary { color: white; background: linear-gradient(135deg, #bf6684, #a94f70); box-shadow: 0 5px 13px rgba(169,79,112,.2); }
+.button-primary:hover, .button-secondary:hover, .button-quiet:hover, .button-danger:hover { transform: translateY(-1px); }
+.hero .button-primary { width: 100%; }
+.button-secondary { background: linear-gradient(135deg, #bd6684, #a64d70); color: white; box-shadow: 0 5px 13px rgba(169,79,112,.16); }
+.button-quiet { background: #f8e7ec; color: #8f5068; }
+.button-danger { background: #f8e8e5; color: #8e3e35; }
+.small-button { min-height: 40px; padding: 9px 12px; border-radius: 13px; font-size: 13px; }
+.tiny-note { font-size: 10px; color: #876b76; margin: 10px 0 0; }
+.section { margin-top: 29px; }
+.section-heading { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 13px; }
+.section-heading p { color: var(--muted); font-size: 13px; margin: 0; }
+.card { background: rgba(255,253,252,.96); border: 1px solid #f1e2e6; border-radius: var(--radius); padding: 17px; box-shadow: var(--shadow); }
+.soft-card { background: linear-gradient(135deg, #f9e9ed, #f0eee8 75%, #edf3ec); border: 1px solid #f0e0e4; border-radius: var(--radius); padding: 17px; }
+.notice { display: flex; gap: 10px; align-items: flex-start; padding: 13px 14px; background: #fff0e9; border: 1px solid #f5dfd4; border-radius: 17px; color: #765b54; font-size: 12px; margin-top: 13px; }
+.notice strong { color: #734756; }
+.notice-icon { width: 22px; height: 22px; flex: 0 0 22px; border-radius: 50%; display: grid; place-items: center; background: #f7dce4; color: #a95070; font-size: 13px; font-weight: 800; }
+.insight { background: linear-gradient(120deg, #fff0f2, #fff8f3); border: 1px solid #f3dfe4; border-radius: 19px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; }
+.insight-icon { flex: 0 0 34px; height: 34px; display: grid; place-items: center; border-radius: 12px; background: #fffdf8; color: #b15d7a; font-size: 17px; }
+.insight p { font-size: 13px; margin: 4px 0 0; color: #796771; }
+.quick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 13px; }
+.quick-card { background: rgba(255,253,252,.94); border: 1px solid #f0e0e5; border-radius: 19px; padding: 13px; min-height: 88px; box-shadow: 0 5px 15px rgba(126,72,91,.045); }
+.quick-card .q-icon { font-size: 19px; margin-bottom: 5px; color: #b3627f; }
+.quick-card strong { display: block; font-size: 12px; }
+.quick-card span { display: block; font-size: 11px; color: var(--muted); margin-top: 3px; }
+details.settings { margin-top: 12px; background: rgba(255,255,255,.68); border: 1px solid var(--line); border-radius: 17px; padding: 12px 14px; }
+details.settings summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--rose-dark); list-style-position: inside; }
+.settings-inner { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; padding-top: 12px; }
+.settings-inner p { grid-column: 1/-1; font-size: 11px; color: var(--muted); margin: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+label, .field-label { color: #66545d; font-weight: 700; font-size: 12px; }
+input[type="number"], input[type="date"], select, textarea { width: 100%; min-height: 44px; border: 1px solid #eadde1; border-radius: 13px; background: white; color: var(--ink); padding: 10px 11px; outline: none; }
+input:focus, select:focus, textarea:focus { border-color: #d58aa1; box-shadow: 0 0 0 3px rgba(194,102,133,.14); }
+textarea { resize: vertical; min-height: 72px; }
+.number-input { max-width: 110px; }
+.settings-save { white-space: nowrap; }
+.empty-state { text-align: center; padding: 25px 15px; color: var(--muted); }
+.empty-state .empty-icon { font-size: 26px; margin-bottom: 7px; color: #c17b92; }
+.empty-state strong { display: block; color: var(--ink); margin-bottom: 4px; font-size: 14px; }
+.entry-list { display: flex; flex-direction: column; gap: 9px; }
+.entry { background: white; border: 1px solid var(--line); border-radius: 17px; padding: 13px 14px; display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; }
+.entry-date { font-weight: 750; font-size: 13px; }
+.entry-meta { font-size: 11px; color: var(--muted); grid-column: 1/-1; }
+.entry-actions { display: flex; gap: 6px; align-items: center; }
+.entry-edit { border: 0; background: #f8e7ec; color: #8f5068; border-radius: 11px; font-size: 11px; font-weight: 750; padding: 6px 9px; }
+.entry-delete { border: 0; background: #fff0ed; color: #894e5d; border-radius: 11px; font-size: 11px; font-weight: 750; padding: 6px 9px; }
+.pattern-box { background: linear-gradient(120deg, #fff0f2, #fff8f3); border: 1px solid #f3dfe4; border-radius: 18px; padding: 14px; margin-top: 12px; }
+.pattern-box p { margin: 4px 0 0; font-size: 12px; color: #796771; }
+.pattern-box strong { font-size: 13px; }
+.action-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; }
+.tip-list { display: grid; gap: 10px; margin-top: 13px; }
+.tip { display: flex; gap: 11px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 13px; box-shadow: 0 5px 15px rgba(126,72,91,.035); }
+.tip-number { width: 27px; height: 27px; flex: 0 0 27px; border-radius: 10px; background: #f7e3e9; color: #a95070; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+.tip p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+.tip strong { font-size: 13px; }
+.alert-card { background: #fff0ed; border: 1px solid #f1d6d0; border-radius: 19px; padding: 15px; color: #71534e; font-size: 12px; }
+.alert-card h3 { color: #894e5d; }
+.sources { font-size: 11px; color: var(--muted); line-height: 1.75; }
+.sources a { font-weight: 650; }
+footer { text-align: center; font-size: 10px; color: var(--muted); margin: 22px 0 10px; }
+.bottom-nav { position: fixed; z-index: 10; bottom: 0; left: 50%; transform: translateX(-50%); width: min(440px, 100%); padding: 9px 15px max(12px, env(safe-area-inset-bottom)); background: rgba(255,250,250,.95); border-top: 1px solid #f0dfe4; box-shadow: 0 -5px 20px rgba(126,72,91,.05); backdrop-filter: blur(16px); display: grid; grid-template-columns: repeat(3,1fr); }
+.nav-item { color: #9a828b; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; font-size: 10px; font-weight: 700; padding: 3px; }
+.nav-item span:first-child { font-size: 18px; line-height: 1.1; }
+.nav-item.active { color: #a95070; }
+dialog { width: min(100% - 18px, 440px); max-height: min(90dvh, 820px); padding: 0; border: 1px solid #f0dfe4; border-radius: 25px; background: var(--paper); color: var(--ink); box-shadow: 0 25px 90px rgba(82,38,54,.25); }
+dialog::backdrop { background: rgba(83,50,64,.42); backdrop-filter: blur(3px); }
+.dialog-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 17px 18px 12px; background: rgba(255,247,246,.97); border-bottom: 1px solid var(--line); }
+.dialog-head h2 { font-size: 23px; margin: 0; }
+.close-button { border: 0; width: 37px; height: 37px; border-radius: 13px; background: #f8e7ec; color: #8f5068; font-size: 21px; }
+.dialog-body { padding: 15px 17px 17px; overflow: auto; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-full { grid-column: 1/-1; }
+.group { border: 1px solid var(--line); background: var(--card); border-radius: 17px; padding: 13px; }
+.group legend { font-size: 12px; font-weight: 800; color: var(--rose-dark); padding: 0 3px; }
+.checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.check-pill { position: relative; display: flex; align-items: center; gap: 7px; border: 1px solid #eddee3; border-radius: 13px; background: white; min-height: 40px; padding: 7px 8px; color: #6b5962; font-size: 11px; font-weight: 600; }
+.check-pill input { accent-color: #b75d7d; width: 16px; height: 16px; margin: 0; flex: 0 0 16px; }
+.full-choice { grid-column: 1/-1; }
+.range-line { display: flex; align-items: center; gap: 10px; }
+.range-line input { accent-color: #b75d7d; flex: 1; min-width: 0; }
+.range-value { min-width: 31px; text-align: center; border-radius: 10px; background: #f8e7ec; color: #8f5068; padding: 4px 5px; font-size: 13px; font-weight: 800; }
+.help-text { font-size: 10px; color: var(--muted); margin: 5px 0 0; }
+.form-actions { display: grid; grid-template-columns: 1fr 1.3fr; gap: 9px; margin-top: 14px; }
+.form-caption { color: var(--muted); font-size: 11px; margin: 0 0 13px; }
+.weight-note { color: var(--muted); font-size: 10px; margin: 4px 0 0; }
+.toast { position: fixed; z-index: 30; left: 50%; bottom: 93px; transform: translate(-50%, 15px); opacity: 0; pointer-events: none; padding: 11px 15px; background: #754254; color: white; border-radius: 14px; box-shadow: var(--shadow); font-size: 12px; transition: .2s ease; width: max-content; max-width: calc(100% - 34px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 360px) {
+  .app { padding-left: 12px; padding-right: 12px; }
+  .hero { padding: 19px 15px; }
+  .flower-art { width: 103px; height: 112px; opacity: .62; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-full { grid-column: auto; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; } }
+
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><g><ellipse cx="12" cy="5.1" rx="2.4" ry="4"/><ellipse cx="17.8" cy="8.2" rx="2.4" ry="4" transform="rotate(60 17.8 8.2)"/><ellipse cx="17.8" cy="15.1" rx="2.4" ry="4" transform="rotate(120 17.8 15.1)"/><ellipse cx="12" cy="18.5" rx="2.4" ry="4"/><ellipse cx="6.1" cy="15.1" rx="2.4" ry="4" transform="rotate(60 6.1 15.1)"/><ellipse cx="6.1" cy="8.2" rx="2.4" ry="4" transform="rotate(120 6.1 8.2)"/></g><circle cx="12" cy="12" r="2.7" fill="currentColor" stroke="none"/></svg></span>Ciclo & cuidado</div>
+      <span class="privacy-pill">Dados neste aparelho</span>
+    </header>
+
+    <section id="hoje" aria-labelledby="title">
+      <div class="eyebrow">Um espaço para você</div>
+      <h1 id="title">Acompanhe seu ciclo. Cuide de você.</h1>
+      <p class="intro">Um espaço para acompanhar o ciclo e os sintomas com gentileza — incluindo a dor na parede abdominal ou na cicatriz relacionada à endometriose.</p>
+
+      <div class="hero">
+        <svg class="flower-art" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+          <path d="M105 49C105 82 123 104 128 151M105 76C91 88 83 104 78 121M119 99C135 87 143 71 145 56" stroke="#78977D" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M91 92C75 82 67 82 59 85C65 99 77 104 91 101M118 119C132 111 143 111 151 116C144 128 132 132 120 128M132 78C132 63 138 53 146 48C152 61 148 72 137 81" fill="#9BB29B" stroke="#78977D" stroke-width="1.5" stroke-linejoin="round"/>
+          <g transform="translate(105 39)" fill="#D98FA5" opacity=".9">
+            <ellipse cx="0" cy="-12" rx="5.5" ry="9"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(60)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(120)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(180)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(240)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(300)"/><circle r="5" fill="#D6AD68"/>
+          </g>
+          <g transform="translate(145 48) scale(.62)" fill="#E7A7B8" opacity=".9">
+            <ellipse cx="0" cy="-12" rx="5.5" ry="9"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(60)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(120)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(180)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(240)"/><ellipse cx="0" cy="-12" rx="5.5" ry="9" transform="rotate(300)"/><circle r="5" fill="#D6AD68"/>
+          </g>
+        </svg>
+        <div class="hero-content">
+          <div class="eyebrow">Seu ciclo, no seu ritmo</div>
+          <h2 id="phaseTitle">Vamos começar pelo seu registro</h2>
+          <p class="hero-sub" id="phaseDescription">Anote o primeiro dia da menstruação para acompanhar seu padrão. Você pode editar tudo depois.</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><span>Próxima menstruação</span><strong id="nextPeriod">Aguardando registro</strong></div>
+            <div class="hero-stat"><span>Dia do ciclo</span><strong id="cycleDay">—</strong></div>
+          </div>
+          <button class="button-primary" id="openLog">＋ Registrar hoje</button>
+          <p class="tiny-note">Previsões são aproximadas. Não servem para diagnóstico nem como método contraceptivo.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-heading"><div><div class="eyebrow">Seu lembrete de hoje</div><h2 style="font-size:23px;margin-top:5px">Escute os sinais</h2></div></div>
+        <div class="insight" id="insightCard" aria-live="polite">
+          <div class="insight-icon" aria-hidden="true">✦</div>
+          <div><strong id="insightTitle">Comece observando</strong><p id="insightText">Um registro diário, mesmo simples, pode ajudar a perceber padrões e conversar com sua equipe de saúde.</p></div>
+        </div>
+        <div class="quick-grid">
+          <div class="quick-card"><div class="q-icon" aria-hidden="true">◌</div><strong>Dor pélvica e abdominal</strong><span>Marque intensidade e duração.</span></div>
+          <div class="quick-card"><div class="q-icon" aria-hidden="true">⌁</div><strong>Parede ou cicatriz</strong><span>Registre a dor local separadamente.</span></div>
+          <div class="quick-card"><div class="q-icon" aria-hidden="true">♡</div><strong>TPM e humor</strong><span>Observe quando aparece e passa.</span></div>
+          <div class="quick-card"><div class="q-icon" aria-hidden="true">◍</div><strong>Cravings / desejos</strong><span>Sem culpa: anote o que sentiu.</span></div>
+        </div>
+      </div>
+
+      <div class="notice"><span class="notice-icon" aria-hidden="true">i</span><div><strong>Privacidade e cuidado</strong><br>Este endereço abre sem senha, então evite compartilhá-lo. Seus registros ficam apenas neste navegador e não são enviados ao site. O app não confirma TPM nem orienta tratamento; levar registros à consulta pode ajudar a equipe a entender seus sintomas.</div></div>
+
+      <details class="settings">
+        <summary>Ajustar duração do ciclo para estimativas</summary>
+        <div class="settings-inner">
+          <div class="field"><label for="cycleLengthInput">Duração média aproximada (dias)</label><input class="number-input" id="cycleLengthInput" type="number" min="21" max="45" step="1" value="28" inputmode="numeric"></div>
+          <button class="button-quiet small-button settings-save" id="saveSettings">Salvar</button>
+          <p>Use como referência a duração que costuma observar. Ciclos variáveis tornam qualquer previsão menos precisa; ajuste esse número quando quiser.</p>
+        </div>
+      </details>
+    </section>
+
+    <section id="historico" class="section" aria-labelledby="historyTitle">
+      <div class="section-heading">
+        <div><div class="eyebrow">Seus registros</div><h2 id="historyTitle">Padrões, sem julgamento</h2><p>Veja os registros recentes e exporte uma cópia para sua consulta.</p></div>
+      </div>
+      <div class="card">
+        <div class="entry-list" id="entryList"></div>
+        <div class="pattern-box" id="patternBox"><strong>Seu resumo aparece aqui</strong><p>Registre alguns dias para começar a reconhecer padrões. O app não diagnostica TPM.</p></div>
+        <div class="action-row">
+          <button class="button-quiet small-button" id="exportData">Baixar meus dados</button>
+          <button class="button-quiet small-button" id="importData">Importar backup</button>
+          <input id="importFile" type="file" accept=".json,application/json" hidden aria-label="Selecionar cópia de segurança">
+          <button class="button-danger small-button" id="clearData">Apagar registros</button>
+        </div>
+        <p class="help-text" style="margin-top:10px">Os registros ficam no armazenamento deste navegador. Exportar uma cópia é uma boa forma de guardar um backup.</p>
+      </div>
+    </section>
+
+    <section id="cuidados" class="section" aria-labelledby="careTitle">
+      <div class="section-heading"><div><div class="eyebrow">Informação acolhedora</div><h2 id="careTitle">Pequenos cuidados possíveis</h2><p>Dicas gerais — adapte ao que é seguro e viável para você.</p></div></div>
+
+      <div class="soft-card">
+        <h3>TPM e desejos alimentares</h3>
+        <p style="font-size:12px;color:#53645a;margin-bottom:0">Mudanças de apetite e cravings podem acontecer antes da menstruação, mas variam entre pessoas e ciclos. Acompanhar por alguns meses ajuda a observar se existe um padrão.</p>
+      </div>
+      <div class="tip-list">
+        <div class="tip"><span class="tip-number">1</span><div><strong>Planeje sem proibir</strong><p>Se a fome ou a vontade por certos alimentos aumentar, tente manter refeições regulares e incluir algo que satisfaça. Grãos integrais, feijões e lentilhas são opções com carboidratos complexos; combine com alimentos que você gosta.</p></div></div>
+        <div class="tip"><span class="tip-number">2</span><div><strong>Cuide do descanso e do movimento</strong><p>Sono regular e atividade física confortável podem apoiar o bem-estar. Em dias de dor, reduza o ritmo; movimento não deve ser uma punição nem precisa ser intenso.</p></div></div>
+        <div class="tip"><span class="tip-number">3</span><div><strong>Observe o ciclo completo</strong><p>Anote humor, dor, energia e desejos alimentares todos os dias, inclusive quando se sentir bem. Para avaliar TPM, um padrão ao longo de 2–3 ciclos e o impacto na rotina importam.</p></div></div>
+      </div>
+
+      <div class="section">
+        <div class="soft-card">
+          <h3>Para a endometriose de parede</h3>
+          <p style="font-size:12px;color:#53645a;margin-bottom:0">Registre separadamente a dor pélvica e a dor no ponto da parede abdominal ou cicatriz: intensidade, lado/local, sangramento e relação com o ciclo. Leve essas anotações à ginecologista ou ao profissional que acompanha sua endometriose. Não mude medicações ou hormônios com base apenas nas previsões do app.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="card">
+          <h3>Se emagrecer é uma meta sua</h3>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Priorize mudanças sustentáveis, sem dietas extremas ou compensações por ter comido. Pense em refeições variadas, movimento possível, sono e apoio profissional. O peso não mede seu esforço, e este app não promete que emagrecer trate a endometriose.</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:0">O campo de peso é opcional. Você pode deixar em branco ou apagar qualquer registro. Se o peso ou a alimentação estiverem trazendo sofrimento, converse com uma nutricionista ou profissional de saúde.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="alert-card">
+          <h3>Quando buscar ajuda</h3>
+          <p style="margin-bottom:8px">Marque uma consulta se a dor piorar, atrapalhar atividades, vier com sintomas novos ou se o tratamento atual não estiver ajudando. Procure atendimento urgente para dor súbita e muito intensa, desmaio/tontura importante, febre ou sangramento muito volumoso — por exemplo, encharcar um absorvente por hora por mais de duas horas.</p>
+          <p style="margin:0">Em caso de emergência, procure o serviço de urgência local. Não espere pelo app.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Fontes para saber mais</h3>
+        <div class="card sources">
+          <a href="https://www.acog.org/womens-health/faqs/premenstrual-syndrome" target="_blank" rel="noopener noreferrer">ACOG — TPM, sintomas e registro por ciclos</a><br>
+          <a href="https://www.nhs.uk/conditions/endometriosis/" target="_blank" rel="noopener noreferrer">NHS — endometriose, sintomas e acompanhamento</a><br>
+          <a href="https://www.eshre.eu/guideline/endometriosis" target="_blank" rel="noopener noreferrer">ESHRE — diretriz de endometriose</a><br>
+          <a href="https://www.cdc.gov/healthy-weight-growth/losing-weight/index.html" target="_blank" rel="noopener noreferrer">CDC — hábitos sustentáveis para controle de peso</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>Ferramenta educativa para acompanhamento pessoal. Não substitui avaliação, diagnóstico ou tratamento de um profissional de saúde.</footer>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegação principal">
+    <a class="nav-item active" href="#hoje"><span aria-hidden="true">⌂</span><span>Hoje</span></a>
+    <a class="nav-item" href="#historico"><span aria-hidden="true">▤</span><span>Registros</span></a>
+    <a class="nav-item" href="#cuidados"><span aria-hidden="true">♡</span><span>Cuidados</span></a>
+  </nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="logDialog" aria-labelledby="dialogTitle">
+    <div class="dialog-head"><h2 id="dialogTitle">Como você está?</h2><button class="close-button" type="button" id="closeDialog" aria-label="Fechar">×</button></div>
+    <form id="dailyForm" class="dialog-body">
+      <p class="form-caption">Um registro simples já ajuda. Preencha só o que quiser.</p>
+      <div class="form-grid">
+        <div class="field form-full"><label for="logDate">Data</label><input id="logDate" name="date" type="date" required></div>
+        <label class="check-pill form-full"><input id="periodStart" type="checkbox"> Hoje começou uma nova menstruação</label>
+        <div class="field"><label for="flow">Sangramento</label><select id="flow"><option value="none">Nenhum</option><option value="spotting">Escape</option><option value="light">Leve</option><option value="medium">Moderado</option><option value="heavy">Intenso</option></select></div>
+        <div class="field"><label for="mood">Humor predominante</label><select id="mood"><option value="">Prefiro não marcar</option><option value="bem">Bem / estável</option><option value="ansiosa">Ansiosa</option><option value="irritada">Irritada</option><option value="triste">Triste / para baixo</option><option value="sensivel">Mais sensível</option></select></div>
+
+        <fieldset class="group form-full"><legend>Dor pélvica ou cólica · 0 a 10</legend><div class="range-line"><input id="pain" type="range" min="0" max="10" value="0"><output id="painValue" class="range-value">0</output></div><p class="help-text">0 = nenhuma dor; 10 = pior dor imaginável.</p></fieldset>
+        <fieldset class="group form-full"><legend>Dor na parede abdominal / cicatriz · 0 a 10</legend><div class="range-line"><input id="wallPain" type="range" min="0" max="10" value="0"><output id="wallPainValue" class="range-value">0</output></div><p class="help-text">Registre a dor local separadamente, mesmo se não houver cólica.</p></fieldset>
+
+        <fieldset class="group form-full"><legend>O que mais percebeu?</legend><div class="checkbox-grid">
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Inchaço"> Inchaço</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Cansaço"> Cansaço</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Dor de cabeça"> Dor de cabeça</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Alteração intestinal"> Intestino</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Seios sensíveis"> Seios sensíveis</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Sono alterado"> Sono alterado</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Irritabilidade"> Irritabilidade</label>
+          <label class="check-pill"><input type="checkbox" name="symptom" value="Ansiedade"> Ansiedade</label>
+        </div></fieldset>
+
+        <fieldset class="group form-full"><legend>Desejos alimentares / cravings</legend><div class="checkbox-grid">
+          <label class="check-pill"><input type="checkbox" name="craving" value="Doce"> Doce</label>
+          <label class="check-pill"><input type="checkbox" name="craving" value="Chocolate"> Chocolate</label>
+          <label class="check-pill"><input type="checkbox" name="craving" value="Salgado"> Salgado</label>
+          <label class="check-pill"><input type="checkbox" name="craving" value="Carboidratos"> Pães / massas</label>
+          <label class="check-pill full-choice"><input type="checkbox" name="craving" value="Outro"> Outro desejo</label>
+        </div><p class="help-text">Marcar não é certo ou errado; é só uma observação.</p></fieldset>
+
+        <div class="field"><label for="sleep">Sono (horas, opcional)</label><input id="sleep" type="number" min="0" max="24" step="0.5" inputmode="decimal" placeholder="Ex.: 7"></div>
+        <div class="field"><label for="weight">Peso (kg, opcional)</label><input id="weight" type="number" min="25" max="350" step="0.1" inputmode="decimal" placeholder="Se quiser"></div>
+        <div class="field form-full"><label for="movement">Movimento / atividade (opcional)</label><select id="movement"><option value="">Não registrar</option><option value="leve">Movimento leve / alongamento</option><option value="caminhada">Caminhada</option><option value="moderada">Atividade moderada</option><option value="descanso">Descansei / precisei reduzir o ritmo</option></select></div>
+        <div class="field form-full"><label for="notes">Observações para você ou para a consulta</label><textarea id="notes" maxlength="500" placeholder="Local da dor, o que ajudou, algo diferente..."></textarea></div>
+      </div>
+      <div class="form-actions"><button class="button-quiet" type="button" id="cancelDialog">Cancelar</button><button class="button-secondary" type="submit">Salvar registro</button></div>
+    </form>
+  </dialog>
+
+  <script>
+    (function () {
+      'use strict';
+      const STORAGE_KEY = 'ciclo-cuidado-registros-v1';
+      const DEFAULT_DATA = { settings: { cycleLength: 28 }, periodStarts: [], logs: {} };
+      let data = loadData();
+      const dialog = document.getElementById('logDialog');
+      const form = document.getElementById('dailyForm');
+      const $ = (id) => document.getElementById(id);
+
+      function loadData() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+          if (!saved || typeof saved !== 'object') return structuredClone(DEFAULT_DATA);
+          return {
+            settings: { ...DEFAULT_DATA.settings, ...(saved.settings || {}) },
+            periodStarts: Array.isArray(saved.periodStarts) ? [...new Set(saved.periodStarts)].sort() : [],
+            logs: saved.logs && typeof saved.logs === 'object' ? saved.logs : {}
+          };
+        } catch (e) { return structuredClone(DEFAULT_DATA); }
+      }
+      function saveData() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); return true; }
+        catch (e) { showToast('Não foi possível salvar neste navegador. Exporte seus dados ou libere espaço.'); return false; }
+      }
+      function localISODate(date = new Date()) {
+        const y = date.getFullYear(); const m = String(date.getMonth() + 1).padStart(2, '0'); const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+      function fromISO(value) { return new Date(value + 'T12:00:00'); }
+      function addDays(value, amount) { const d = fromISO(value); d.setDate(d.getDate() + amount); return localISODate(d); }
+      function daysBetween(a, b) { return Math.round((fromISO(b) - fromISO(a)) / 86400000); }
+      function formatDate(value, opts = { day: 'numeric', month: 'short' }) {
+        if (!value) return '—';
+        return new Intl.DateTimeFormat('pt-BR', opts).format(fromISO(value));
+      }
+      function escapeHTML(value) { return String(value || '').replace(/[&<>"']/g, (ch) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch])); }
+      function cycleLength() {
+        return Number(data.settings.cycleLength) || 28;
+      }
+      function nextStart() {
+        const starts = data.periodStarts.slice().sort();
+        if (!starts.length) return null;
+        return addDays(starts[starts.length - 1], cycleLength());
+      }
+      function showToast(message) {
+        const el = $('toast'); el.textContent = message; el.classList.add('show');
+        clearTimeout(showToast.timer); showToast.timer = setTimeout(() => el.classList.remove('show'), 2600);
+      }
+      function renderDashboard() {
+        const today = localISODate();
+        const starts = data.periodStarts.slice().sort();
+        const next = nextStart();
+        const length = cycleLength();
+        $('cycleLengthInput').value = data.settings.cycleLength || 28;
+        if (!starts.length) {
+          $('phaseTitle').textContent = 'Vamos começar pelo seu registro';
+          $('phaseDescription').textContent = 'Anote o primeiro dia da menstruação para acompanhar seu padrão. Você pode editar tudo depois.';
+          $('nextPeriod').textContent = 'Aguardando registro';
+          $('cycleDay').textContent = '—';
+          $('insightTitle').textContent = 'Comece observando';
+          $('insightText').textContent = 'Um registro diário, mesmo simples, pode ajudar a perceber padrões e conversar com sua equipe de saúde.';
+          return;
+        }
+        const last = starts[starts.length - 1];
+        const day = Math.max(1, daysBetween(last, today) + 1);
+        const until = daysBetween(today, next);
+        $('cycleDay').textContent = `Dia ${day}`;
+        if (until > 7) {
+          $('phaseTitle').textContent = 'Ciclo em acompanhamento';
+          $('phaseDescription').textContent = `Você registrou o início da última menstruação em ${formatDate(last)}. Continue anotando como se sente.`;
+        } else if (until >= 1) {
+          $('phaseTitle').textContent = 'Janela pré-menstrual estimada';
+          $('phaseDescription').textContent = 'Essa janela é aproximada. TPM e cravings não acontecem da mesma forma para todo mundo.';
+        } else if (until === 0) {
+          $('phaseTitle').textContent = 'Data estimada para hoje';
+          $('phaseDescription').textContent = 'A previsão pode variar. Se a menstruação começar, registre o início para atualizar seu acompanhamento.';
+        } else {
+          $('phaseTitle').textContent = 'A previsão já passou';
+          $('phaseDescription').textContent = 'A estimativa pode não refletir seu padrão. Se houver atraso incomum, ciclos muito irregulares ou possibilidade de gravidez, converse com um profissional.';
+        }
+        $('nextPeriod').textContent = formatDate(next, { day: 'numeric', month: 'short' });
+        if (until > 7) {
+          $('insightTitle').textContent = 'Observe seu corpo ao longo do mês';
+          $('insightText').textContent = `Faltam cerca de ${until} dias para a data estimada. Anote também os dias sem sintomas: isso ajuda a entender melhor seu padrão.`;
+        } else if (until >= 1) {
+          $('insightTitle').textContent = 'Janela pré-menstrual estimada';
+          $('insightText').textContent = 'Se notar mais fome, cravings, irritabilidade ou dor, registre sem julgamento. Esta previsão não confirma TPM.';
+        } else if (until === 0) {
+          $('insightTitle').textContent = 'Data estimada para hoje';
+          $('insightText').textContent = 'O ciclo pode variar. Use o registro como referência, não como certeza.';
+        } else {
+          $('insightTitle').textContent = 'Previsão aproximada';
+          $('insightText').textContent = `A data estimada passou há ${Math.abs(until)} ${Math.abs(until) === 1 ? 'dia' : 'dias'}. A previsão pode errar, especialmente se o ciclo variar.`;
+        }
+      }
+      function renderEntries() {
+        const list = $('entryList');
+        const entries = Object.values(data.logs).sort((a, b) => b.date.localeCompare(a.date));
+        if (!entries.length) {
+          list.innerHTML = '<div class="empty-state"><div class="empty-icon" aria-hidden="true">◌</div><strong>Seus registros vão aparecer aqui</strong><span>Use “Registrar hoje” para começar com o que for mais importante para você.</span></div>';
+        } else {
+          list.innerHTML = entries.map(entry => {
+            const bits = [];
+            if (entry.periodStart) bits.push('início da menstruação');
+            if (entry.flow && entry.flow !== 'none') bits.push(`sangramento ${flowLabel(entry.flow).toLowerCase()}`);
+            if (Number(entry.pain) > 0) bits.push(`dor pélvica ${entry.pain}/10`);
+            if (Number(entry.wallPain) > 0) bits.push(`dor na parede ${entry.wallPain}/10`);
+            if (entry.cravings && entry.cravings.length) bits.push(`desejo: ${entry.cravings.join(', ').toLowerCase()}`);
+            if (!bits.length) bits.push('registro diário');
+            return `<div class="entry"><div class="entry-date">${escapeHTML(formatDate(entry.date, { weekday: 'short', day: 'numeric', month: 'long' }))}</div><div class="entry-actions"><button class="entry-edit" type="button" data-edit="${escapeHTML(entry.date)}">Ver / editar</button><button class="entry-delete" type="button" data-delete="${escapeHTML(entry.date)}">Excluir</button></div><div class="entry-meta">${escapeHTML(bits.join(' · '))}</div></div>`;
+          }).join('');
+          list.querySelectorAll('[data-edit]').forEach(button => button.addEventListener('click', () => openLog(button.dataset.edit)));
+          list.querySelectorAll('[data-delete]').forEach(button => button.addEventListener('click', () => deleteEntry(button.dataset.delete)));
+        }
+        renderPattern();
+      }
+      function deleteEntry(date) {
+        if (!data.logs[date]) return;
+        if (!confirm(`Apagar o registro de ${formatDate(date, { day: 'numeric', month: 'long', year: 'numeric' })}?`)) return;
+        delete data.logs[date];
+        data.periodStarts = data.periodStarts.filter(start => start !== date);
+        if (saveData()) { renderAll(); showToast('Registro apagado.'); }
+      }
+      function flowLabel(value) { return ({ none: 'Nenhum', spotting: 'Escape', light: 'Leve', medium: 'Moderado', heavy: 'Intenso' })[value] || 'Não informado'; }
+      function renderPattern() {
+        const logs = Object.values(data.logs);
+        const withCravings = logs.filter(x => x.cravings && x.cravings.length).length;
+        const periodStarts = data.periodStarts.slice().sort();
+        let premenstrualCravings = 0;
+        let premenstrualLoggedDays = 0;
+        logs.forEach(entry => {
+          const upcoming = periodStarts.some(start => {
+            const gap = daysBetween(entry.date, start);
+            return gap >= 1 && gap <= 7;
+          });
+          if (upcoming) {
+            premenstrualLoggedDays++;
+            if (entry.cravings && entry.cravings.length) premenstrualCravings++;
+          }
+        });
+        if (!logs.length) {
+          $('patternBox').innerHTML = '<strong>Seu resumo aparece aqui</strong><p>Registre alguns dias para começar a reconhecer padrões. O app não diagnostica TPM.</p>';
+        } else if (premenstrualLoggedDays > 0) {
+          $('patternBox').innerHTML = `<strong>Observação dos registros</strong><p>Você registrou cravings em ${premenstrualCravings} de ${premenstrualLoggedDays} dia(s) anotado(s) nos 7 dias antes de uma menstruação registrada. ${withCravings} dia(s) no total tiveram desejos alimentares. É só um resumo dos seus dados, não um diagnóstico.</p>`;
+        } else {
+          $('patternBox').innerHTML = `<strong>Observação dos registros</strong><p>Você registrou cravings em ${withCravings} dia(s). Quando houver registros nos 7 dias antes de uma menstruação, o app mostrará essa comparação. TPM precisa de avaliação do padrão e do impacto na sua rotina.</p>`;
+        }
+      }
+      function renderAll() { renderDashboard(); renderEntries(); }
+      function openLog(date = localISODate()) {
+        form.reset();
+        $('logDate').value = date;
+        $('pain').value = 0; $('wallPain').value = 0;
+        $('painValue').textContent = '0'; $('wallPainValue').textContent = '0';
+        const existing = data.logs[date];
+        if (existing) {
+          $('periodStart').checked = !!existing.periodStart;
+          $('flow').value = existing.flow || 'none';
+          $('mood').value = existing.mood || '';
+          $('pain').value = existing.pain || 0; $('wallPain').value = existing.wallPain || 0;
+          $('painValue').textContent = String(existing.pain || 0); $('wallPainValue').textContent = String(existing.wallPain || 0);
+          $('sleep').value = existing.sleep || ''; $('weight').value = existing.weight || '';
+          $('movement').value = existing.movement || ''; $('notes').value = existing.notes || '';
+          document.querySelectorAll('input[name="symptom"]').forEach(el => { el.checked = (existing.symptoms || []).includes(el.value); });
+          document.querySelectorAll('input[name="craving"]').forEach(el => { el.checked = (existing.cravings || []).includes(el.value); });
+        }
+        $('dialogTitle').textContent = existing ? 'Editar registro' : 'Como você está?';
+        if (typeof dialog.showModal === 'function') dialog.showModal();
+        else { dialog.setAttribute('open', ''); }
+      }
+      function closeLog() { if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open'); }
+      $('openLog').addEventListener('click', () => openLog());
+      $('closeDialog').addEventListener('click', closeLog);
+      $('cancelDialog').addEventListener('click', closeLog);
+      $('pain').addEventListener('input', e => $('painValue').textContent = e.target.value);
+      $('wallPain').addEventListener('input', e => $('wallPainValue').textContent = e.target.value);
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        const date = $('logDate').value;
+        if (!date) { showToast('Escolha uma data para o registro.'); return; }
+        const entry = {
+          date,
+          periodStart: $('periodStart').checked,
+          flow: $('flow').value,
+          mood: $('mood').value,
+          pain: Number($('pain').value),
+          wallPain: Number($('wallPain').value),
+          symptoms: [...document.querySelectorAll('input[name="symptom"]:checked')].map(x => x.value),
+          cravings: [...document.querySelectorAll('input[name="craving"]:checked')].map(x => x.value),
+          sleep: $('sleep').value ? Number($('sleep').value) : null,
+          weight: $('weight').value ? Number($('weight').value) : null,
+          movement: $('movement').value,
+          notes: $('notes').value.trim()
+        };
+        data.logs[date] = entry;
+        if (entry.periodStart) {
+          data.periodStarts = [...new Set([...data.periodStarts, date])].sort();
+          if (entry.flow === 'none') entry.flow = 'light';
+        } else {
+          // A data continua no histórico se já foi registrada; a remoção do início também remove do cálculo.
+          data.periodStarts = data.periodStarts.filter(x => x !== date);
+        }
+        if (saveData()) {
+          renderAll(); closeLog(); showToast('Registro salvo neste aparelho.');
+        }
+      });
+      $('saveSettings').addEventListener('click', () => {
+        const value = Number($('cycleLengthInput').value);
+        if (!Number.isInteger(value) || value < 21 || value > 45) { showToast('Use um número entre 21 e 45 dias.'); return; }
+        data.settings.cycleLength = value;
+        if (saveData()) { renderAll(); showToast('Estimativa atualizada.'); }
+      });
+      $('exportData').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), ...data }, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a'); link.href = url; link.download = `meus-registros-ciclo-${localISODate()}.json`;
+        document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+        showToast('Cópia dos registros preparada para baixar.');
+      });
+      $('importData').addEventListener('click', () => $('importFile').click());
+      $('importFile').addEventListener('change', async (event) => {
+        const input = event.target;
+        const file = input.files && input.files[0];
+        if (!file) return;
+        try {
+          const imported = normalizeImportedData(JSON.parse(await file.text()));
+          if (!confirm('Importar este backup substituirá os registros e configurações salvos neste navegador. Continuar?')) return;
+          const previous = data;
+          data = imported;
+          if (saveData()) { renderAll(); showToast('Backup importado com sucesso.'); }
+          else data = previous;
+        } catch (error) {
+          showToast('Não foi possível importar. Selecione um JSON exportado por este app.');
+        } finally {
+          input.value = '';
+        }
+      });
+      function normalizeImportedData(payload) {
+        if (!payload || typeof payload !== 'object' || Array.isArray(payload) || !payload.settings || !Array.isArray(payload.periodStarts) || !payload.logs || typeof payload.logs !== 'object' || Array.isArray(payload.logs)) throw new Error('Formato inválido');
+        const cycleLength = Number(payload.settings.cycleLength);
+        if (!Number.isInteger(cycleLength) || cycleLength < 21 || cycleLength > 45) throw new Error('Duração inválida');
+        const isDate = value => {
+          if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+          const parsed = new Date(`${value}T00:00:00Z`);
+          return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
+        };
+        const starts = [...new Set(payload.periodStarts)];
+        if (starts.some(date => !isDate(date))) throw new Error('Data inválida');
+        const allowed = {
+          flow: ['none', 'spotting', 'light', 'medium', 'heavy'],
+          mood: ['', 'bem', 'ansiosa', 'irritada', 'triste', 'sensivel'],
+          movement: ['', 'leve', 'caminhada', 'moderada', 'descanso'],
+          symptoms: ['Inchaço', 'Cansaço', 'Dor de cabeça', 'Alteração intestinal', 'Seios sensíveis', 'Sono alterado', 'Irritabilidade', 'Ansiedade'],
+          cravings: ['Doce', 'Chocolate', 'Salgado', 'Carboidratos', 'Outro']
+        };
+        const bounded = (value, min, max, fallback = null) => {
+          if (value === null || value === '' || typeof value === 'undefined') return fallback;
+          const number = Number(value);
+          if (!Number.isFinite(number) || number < min || number > max) throw new Error('Valor fora do intervalo');
+          return number;
+        };
+        const logs = {};
+        for (const [date, item] of Object.entries(payload.logs)) {
+          if (!isDate(date) || !item || typeof item !== 'object' || Array.isArray(item) || item.date !== date) throw new Error('Registro inválido');
+          logs[date] = {
+            date,
+            periodStart: item.periodStart === true,
+            flow: allowed.flow.includes(item.flow) ? item.flow : 'none',
+            mood: allowed.mood.includes(item.mood) ? item.mood : '',
+            pain: bounded(item.pain, 0, 10, 0),
+            wallPain: bounded(item.wallPain, 0, 10, 0),
+            symptoms: Array.isArray(item.symptoms) ? [...new Set(item.symptoms.filter(value => allowed.symptoms.includes(value)))] : [],
+            cravings: Array.isArray(item.cravings) ? [...new Set(item.cravings.filter(value => allowed.cravings.includes(value)))] : [],
+            sleep: bounded(item.sleep, 0, 24),
+            weight: bounded(item.weight, 25, 350),
+            movement: allowed.movement.includes(item.movement) ? item.movement : '',
+            notes: typeof item.notes === 'string' ? item.notes.slice(0, 500) : ''
+          };
+        }
+        return { settings: { cycleLength }, periodStarts: starts.sort(), logs };
+      }
+      $('clearData').addEventListener('click', () => {
+        if (!confirm('Apagar todos os registros e configurações salvos neste navegador? Esta ação não pode ser desfeita.')) return;
+        data = structuredClone(DEFAULT_DATA);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        renderAll(); showToast('Registros apagados.');
+      });
+      document.querySelectorAll('.nav-item').forEach(link => link.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+        link.classList.add('active');
+      }));
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

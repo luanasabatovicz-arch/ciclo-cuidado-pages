@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Flor rosa">
+  <rect width="128" height="128" rx="34" fill="#c97891"/>
+  <g fill="#fff7f6">
+    <ellipse cx="64" cy="34" rx="11" ry="20"/>
+    <ellipse cx="64" cy="34" rx="11" ry="20" transform="rotate(60 64 64)"/>
+    <ellipse cx="64" cy="34" rx="11" ry="20" transform="rotate(120 64 64)"/>
+    <ellipse cx="64" cy="34" rx="11" ry="20" transform="rotate(180 64 64)"/>
+    <ellipse cx="64" cy="34" rx="11" ry="20" transform="rotate(240 64 64)"/>
+    <ellipse cx="64" cy="34" rx="11" ry="20" transform="rotate(300 64 64)"/>
+  </g>
+  <circle cx="64" cy="64" r="12" fill="#e4bf82"/>
+</svg>
